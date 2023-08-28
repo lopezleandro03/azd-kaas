@@ -4,16 +4,9 @@ locals {
   resource_token               = substr(replace(lower(local.sha), "[^A-Za-z0-9_]", ""), 0, 13)
 }
 
-resource "azurecaf_name" "rg_name" {
-  name          = var.environment_name
-  resource_type = "azurerm_resource_group"
-  random_length = 0
-  clean_input   = true
-}
-
 # Deploy resource group
 resource "azurerm_resource_group" "rg" {
-  name     = azurecaf_name.rg_name.result
+  name     = var.resource_group_name
   location = var.location
   // Tag the resource group with the azd environment name
   // This should also be applied to all resources created in this module
@@ -40,7 +33,7 @@ resource "azurerm_container_registry" "acr" {
 
 # Create an AKS cluster
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "aks-cluster"
+  name                = var.aks_cluster_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "kaas"

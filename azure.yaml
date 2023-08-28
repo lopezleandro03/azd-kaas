@@ -30,3 +30,10 @@ name: azd-starter
 #     dist: build
 infra:
   provider: terraform
+hooks:
+  postprovision:
+    windows: # Run referenced script that uses environment variables (script shown below)
+      shell: pwsh
+      run: ./scripts/postprovision.ps1
+      interactive: true
+      continueOnError: false
